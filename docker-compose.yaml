@@ -1,0 +1,72 @@
+x-airflow-common: &airflow-common
+  image: apache/airflow:3.3.1
+  environment:
+    AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres/${POSTGRES_DB:-airflow}
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+    AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
+    AIRFLOW__CORE__DAG_BUNDLE_NAME: dags-folder
+    AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: 30
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./include:/opt/airflow/include
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+    - ./data:/opt/airflow/data
+  depends_on:
+    postgres:
+      condition: service_healthy
+  env_file:
+    - .env
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-airflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
+      POSTGRES_DB: ${POSTGRES_DB:-airflow}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-airflow}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  db-init:
+    <<: *airflow-common
+    command: airflow db migrate
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  airflow:
+    <<: *airflow-common
+    command: >
+      bash -c "
+      airflow connections add 'postgres_default' --conn-type 'postgres' --conn-host 'postgres' --conn-port 5432 --conn-login 'airflow' --conn-password 'airflow' --conn-schema 'airflow' 2>/dev/null || true &&
+      airflow standalone
+      "
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s  
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+
+volumes:
+  postgres_data:

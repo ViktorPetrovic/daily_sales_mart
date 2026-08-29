@@ -1,0 +1,39 @@
+name: Check Airflow DAG
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-dag:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install Airflow with providers
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Check Python syntax
+        run: |
+          python -m py_compile dags/sales_mart_etl.py
+      
+      - name: Check DAG can be imported
+        run: |
+          python -c "
+          import sys
+          import os
+          sys.path.append(os.getcwd())
+          
+          from airflow import DAG
+          import dags.sales_mart_etl

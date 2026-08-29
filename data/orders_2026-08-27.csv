@@ -1,0 +1,7 @@
+order_id,order_date,customer_id,product_name,quantity,unit_price,currency,status
+1005,2026-08-27,1,Смартфон,3,75000,RUB,completed
+1006,2026-08-27,2,Наушники,10,5000,RUB,completed
+1007,2026-08-27,3,Монитор,2,45000,RUB,completed
+1008,2026-08-27,4,Клавиатура,1,2400,RUB,completed
+1009,2026-08-27,1,Ноутбук,1,120000,RUB,completed
+1010,2026-08-27,2,Мышь,15,2000,RUB,completed
