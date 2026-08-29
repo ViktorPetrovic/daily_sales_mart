@@ -388,7 +388,7 @@ docker exec -it airflow_project-airflow-1 airflow dags list
 
 ---
 
-## 🤖 CI/CD
+## CI/CD
 
 Проект использует **GitHub Actions** для автоматической проверки:
 
@@ -443,7 +443,7 @@ jobs:
 
 ---
 
-## 🔧 Устранение неполадок
+## Устранение неполадок
 
 ### ❌ Ошибка: `FileNotFoundError: /opt/airflow/data/orders_*.csv`
 
