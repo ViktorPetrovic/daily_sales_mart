@@ -437,7 +437,7 @@ jobs:
           from airflow import DAG
           import dags.sales_mart_etl
           
-          print('✅ DAG imported successfully!')
+          print('DAG imported successfully!')
           "
 ```
 
@@ -445,14 +445,14 @@ jobs:
 
 ## Устранение неполадок
 
-### ❌ Ошибка: `FileNotFoundError: /opt/airflow/data/orders_*.csv`
+### Ошибка: `FileNotFoundError: /opt/airflow/data/orders_*.csv`
 
 **Решение:** Проверьте, что файл существует:
 ```bash
 docker exec -it airflow_project-airflow-1 ls -la /opt/airflow/data/
 ```
 
-### ❌ Порт 8080 уже занят
+### Порт 8080 уже занят
 
 **Решение:** Освободите или измените порт в `docker-compose.yml`:
 ```yaml
@@ -460,7 +460,7 @@ ports:
   - "8081:8080"  # ← Новый порт
 ```
 
-### ❌ Ошибка: `DAG seems to be missing`
+### Ошибка: `DAG seems to be missing`
 
 **Решение:** 
 1. Проверьте, что файл находится в папке `dags/`
@@ -474,7 +474,7 @@ docker-compose restart airflow
 ```
 ---
 
-## 📝 Полезные команды
+## Полезные команды
 
 ### Управление контейнерами
 
@@ -570,7 +570,7 @@ docker exec -it airflow_project-postgres-1 psql -U airflow -d airflow -c "SELECT
 
 ---
 
-## 🔍 Диагностика проблем
+## Диагностика проблем
 
 ```bash
 # Посмотреть логи Airflow
@@ -582,7 +582,7 @@ docker-compose logs postgres --tail=50
 
 ---
 
-## 📦 Зависимости
+## Зависимости
 
 ### requirements.txt
 
@@ -594,7 +594,7 @@ apache-airflow-providers-postgres==7.0.2
 
 ---
 
-## 📞 Контакты
+## Контакты
 
 - **Автор:** [Александр]
 - **Email:** [navselv3@yandex.ru]
@@ -602,7 +602,7 @@ apache-airflow-providers-postgres==7.0.2
 
 ---
 
-## 🙏 Благодарности
+## Благодарности
 
 - [Apache Airflow](https://airflow.apache.org/)
 - [PostgreSQL](https://www.postgresql.org/)
